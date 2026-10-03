@@ -176,3 +176,9 @@ Authorization: Bearer {{adminLogin2.response.body.token}}
 ### P18. Admin deletes the test product
 DELETE http://localhost:5000/api/admin/products/{{newProduct.response.body.id}}
 Authorization: Bearer {{adminLogin2.response.body.token}}
+
+
+
+### Customer tries the admin dashboard (should be 403)
+GET http://localhost:5000/api/admin/stats
+Authorization: Bearer {{customerLogin2.response.body.token}}

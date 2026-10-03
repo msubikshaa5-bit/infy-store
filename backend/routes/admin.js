@@ -9,6 +9,17 @@ const router = Router();
 // One line protects EVERY route in this file
 router.use(authenticate, requireAdmin);
 
+// Accept our own uploaded images, or normal http(s) links
+function isValidImage(u) {
+  if (/^\/uploads\/[\w-]+\.(jpg|png|webp)$/.test(u)) return true;
+  try {
+    const protocol = new URL(u).protocol;
+    return protocol === 'http:' || protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 const productSchema = z.object({
   name: z.string().trim().min(2, 'Name must be at least 2 characters').max(120),
   description: z.string().trim().min(10, 'Description must be at least 10 characters').max(2000),
@@ -16,8 +27,10 @@ const productSchema = z.object({
   discount: z.number().int().min(0, 'Discount cannot be negative').max(90, 'Discount is too high').optional(),
   stock: z.number().int('Stock must be a whole number').min(0, 'Stock cannot be negative').optional(),
   imageUrl: z
-    .url('Enter a valid image URL')
-    .refine((u) => /^https?:\/\//i.test(u), 'Image URL must start with http:// or https://'),
+    .string('Add an image')
+    .trim()
+    .max(500)
+    .refine(isValidImage, 'Use an uploaded image or a link starting with http:// or https://'), 
   specs: z.record(z.string(), z.string()).optional(),
   categoryId: z.number().int().positive('Choose a category'),
 });

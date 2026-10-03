@@ -6,9 +6,11 @@ import authRoutes from './routes/auth.js';
 import productRoutes from './routes/products.js';
 import categoryRoutes from './routes/categories.js';
 import adminRoutes from './routes/admin.js';
+import adminPanelRoutes from './routes/adminPanel.js';
 import cartRoutes from './routes/cart.js';
 import wishlistRoutes from './routes/wishlist.js';
 import orderRoutes from './routes/orders.js';
+import { UPLOAD_DIR } from './lib/upload.js';
 
 if (!process.env.JWT_SECRET) {
   console.error('JWT_SECRET is missing in .env');
@@ -21,6 +23,9 @@ app.use(helmet());
 app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 
+// Uploaded product images are served from here
+app.use('/uploads', express.static(UPLOAD_DIR));
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
@@ -29,6 +34,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/admin', adminPanelRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/orders', orderRoutes);

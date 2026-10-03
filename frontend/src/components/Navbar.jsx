@@ -75,6 +75,12 @@ export default function Navbar() {
               <Link to="/orders" className={link}>
                 Orders
               </Link>
+
+              {user.role === 'ADMIN' && (
+                <Link to="/admin" className={link}>
+                  Admin
+                </Link>
+              )}
               <button type="button" onClick={onLogout} className={link}>
                 Log out
               </button>
