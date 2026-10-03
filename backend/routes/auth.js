@@ -1,3 +1,7 @@
+
+
+import { rateLimit } from '../middleware/rateLimit.js';
+
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -6,6 +10,13 @@ import { prisma } from '../lib/prisma.js';
 import { authenticate } from '../middleware/auth.js';
 
 const router = Router();
+
+// Slows down password guessing: 30 attempts per 15 minutes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 30,
+  message: 'Too many attempts. Please wait a few minutes and try again.',
+});
 
 // ---- Validation rules (zod checks incoming data) ----
 const registerSchema = z.object({
@@ -37,7 +48,7 @@ function publicUser(user) {
 }
 
 // ---- POST /api/auth/register ----
-router.post('/register', async (req, res) => {
+  router.post('/register', authLimiter, async (req, res) => {
   const result = registerSchema.safeParse(req.body);
   if (!result.success) {
     return res.status(400).json({ message: result.error.issues[0].message });
@@ -65,7 +76,7 @@ router.post('/register', async (req, res) => {
 });
 
 // ---- POST /api/auth/login ----
-router.post('/login', async (req, res) => {
+  router.post('/login', authLimiter, async (req, res) => {
   const result = loginSchema.safeParse(req.body);
   if (!result.success) {
     return res.status(400).json({ message: result.error.issues[0].message });
@@ -94,3 +105,4 @@ router.get('/me', authenticate, (req, res) => {
 });
 
 export default router;
+
