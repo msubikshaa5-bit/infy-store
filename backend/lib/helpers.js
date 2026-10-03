@@ -37,3 +37,8 @@ export function handleError(err, res) {
   console.error(err);
   return res.status(500).json({ message: 'Something went wrong' });
 }
+
+// Price after discount, e.g. 27999 with 10% off becomes 25199
+export function finalPriceOf(p) {
+  return Math.round((p.price * (100 - p.discount)) / 100);
+}

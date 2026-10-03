@@ -1,3 +1,6 @@
+
+import AddToCart from '../components/AddToCart';
+import ReviewForm from '../components/ReviewForm';
 import { Link, useParams } from 'react-router-dom';
 import { useFetch } from '../useFetch';
 import { formatPrice } from '../utils';
@@ -70,6 +73,8 @@ export default function ProductDetail() {
           </p>
 
           <p className="mt-4 text-gray-700">{p.description}</p>
+
+          <AddToCart product={p} />
         </div>
       </div>
 
@@ -99,6 +104,8 @@ export default function ProductDetail() {
         <h2 id="reviews-heading" className="mb-3 text-xl font-semibold">
           Reviews ({p.ratingCount})
         </h2>
+
+        <ReviewForm productId={p.id} onDone={retry} />
         {p.reviews.length === 0 ? (
           <p className="text-gray-500">No reviews yet.</p>
         ) : (
