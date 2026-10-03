@@ -1,3 +1,6 @@
+
+
+import InfyChat from './components/InfyChat';
 import { Link, Route, Routes } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import RequireAuth from './components/RequireAuth';
@@ -67,6 +70,11 @@ export default function App() {
       <footer className="border-t border-gray-200 bg-white py-4 text-center text-sm text-gray-500">
         © INFY Store
       </footer>
+
+     
+      <InfyChat />
+
+
     </div>
   );
 }

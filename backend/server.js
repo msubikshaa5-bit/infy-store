@@ -10,11 +10,15 @@ import adminPanelRoutes from './routes/adminPanel.js';
 import cartRoutes from './routes/cart.js';
 import wishlistRoutes from './routes/wishlist.js';
 import orderRoutes from './routes/orders.js';
+import aiRoutes from './routes/ai.js';
 import { UPLOAD_DIR } from './lib/upload.js';
 
 if (!process.env.JWT_SECRET) {
   console.error('JWT_SECRET is missing in .env');
   process.exit(1);
+}
+if (!process.env.GEMINI_API_KEY) {
+  console.warn('GEMINI_API_KEY is not set: INFY will run in basic mode (no AI explanations).');
 }
 
 const app = express();
@@ -23,7 +27,6 @@ app.use(helmet());
 app.use(cors({ origin: 'http://localhost:5173' }));
 app.use(express.json());
 
-// Uploaded product images are served from here
 app.use('/uploads', express.static(UPLOAD_DIR));
 
 app.get('/api/health', (req, res) => {
@@ -38,6 +41,7 @@ app.use('/api/admin', adminPanelRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/ai', aiRoutes);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
