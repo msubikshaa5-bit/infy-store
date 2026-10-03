@@ -5,14 +5,16 @@ import './index.css';
 import App from './App.jsx';
 import { AuthProvider } from './AuthContext.jsx';
 import { ShopProvider } from './ShopContext.jsx';
+import ErrorBoundary from './components/ErrorBoundary.jsx';
 
-// Order matters: ShopProvider needs the router and the logged-in user
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
         <ShopProvider>
-          <App />
+          <ErrorBoundary>
+            <App />
+          </ErrorBoundary>
         </ShopProvider>
       </AuthProvider>
     </BrowserRouter>
