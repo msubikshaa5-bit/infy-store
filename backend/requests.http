@@ -1,3 +1,4 @@
+
 ### 1. Register
 POST http://localhost:5000/api/auth/register
 Content-Type: application/json
@@ -51,3 +52,127 @@ Authorization: Bearer {{adminLogin.response.body.token}}
 
 ### 8. No token (should FAIL with 401)
 GET http://localhost:5000/api/auth/me
+
+### P1. List all products
+GET http://localhost:5000/api/products
+
+### P2. Search for "nova"
+GET http://localhost:5000/api/products?search=nova
+
+### P3. Price between 20000 and 60000
+GET http://localhost:5000/api/products?minPrice=20000&maxPrice=60000
+
+### P4. Only the Smartphones main category (includes both subcategories)
+GET http://localhost:5000/api/products?category=1
+
+### P5. Cheapest first, in stock only
+GET http://localhost:5000/api/products?sort=price_asc&inStock=true
+
+### P6. Page 2 with 3 per page
+GET http://localhost:5000/api/products?page=2&limit=3
+
+### P7. One product
+GET http://localhost:5000/api/products/1
+
+### P8. Bad id (should be 400)
+GET http://localhost:5000/api/products/abc
+
+### P9. Category tree
+GET http://localhost:5000/api/categories
+
+### P10. Register again (the reset deleted the old test user)
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "password": "Test@1234"
+}
+
+### P11. Customer login
+# @name customerLogin2
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Test@1234"
+}
+
+### P12. Customer posts a review
+POST http://localhost:5000/api/products/1/reviews
+Content-Type: application/json
+Authorization: Bearer {{customerLogin2.response.body.token}}
+
+{
+  "rating": 5,
+  "comment": "Excellent camera and battery."
+}
+
+### P13. Customer tries to create a product (should be 403)
+POST http://localhost:5000/api/admin/products
+Content-Type: application/json
+Authorization: Bearer {{customerLogin2.response.body.token}}
+
+{
+  "name": "Hack Phone",
+  "description": "Customers must not be able to add this.",
+  "price": 100,
+  "imageUrl": "https://placehold.co/400x400",
+  "categoryId": 2
+}
+
+### P14. Admin login
+# @name adminLogin2
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@infy.com",
+  "password": "Admin@123"
+}
+
+### P15. Admin creates a product
+# @name newProduct
+POST http://localhost:5000/api/admin/products
+Content-Type: application/json
+Authorization: Bearer {{adminLogin2.response.body.token}}
+
+{
+  "name": "Test Phone",
+  "description": "A phone created from the admin API.",
+  "price": 15999,
+  "discount": 5,
+  "stock": 3,
+  "imageUrl": "https://placehold.co/400x400?text=Test",
+  "specs": { "RAM": "6GB", "Storage": "64GB" },
+  "categoryId": 2
+}
+
+### P16. Admin updates price and stock
+PUT http://localhost:5000/api/admin/products/{{newProduct.response.body.id}}
+Content-Type: application/json
+Authorization: Bearer {{adminLogin2.response.body.token}}
+
+{
+  "price": 14999,
+  "stock": 50
+}
+
+### P17. Admin sends invalid data (should be 400)
+POST http://localhost:5000/api/admin/products
+Content-Type: application/json
+Authorization: Bearer {{adminLogin2.response.body.token}}
+
+{
+  "name": "X",
+  "description": "short",
+  "price": -5,
+  "imageUrl": "javascript:alert(1)",
+  "categoryId": 2
+}
+
+### P18. Admin deletes the test product
+DELETE http://localhost:5000/api/admin/products/{{newProduct.response.body.id}}
+Authorization: Bearer {{adminLogin2.response.body.token}}
