@@ -1,0 +1,53 @@
+### 1. Register
+POST http://localhost:5000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "password": "Test@1234"
+}
+
+### 2. Login
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Test@1234"
+}
+
+### 3. Login (named so later requests can reuse the token)
+#̥ @name customerLogin
+POST̥ http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Test@1234"
+}
+
+### 4. Who am I?
+̥̥GET http://localhost:5000/api/auth/me
+Authorization: Bearer {{customerLogin.response.body.token}}
+
+### 5. Customer tries admin route (should FAIL with 403)
+GET http://localhost:5000/api/admin/ping
+Authorization: Bearer {{customerLogin.response.body.token}}
+
+### 6. Admin login
+# @name adminLogin
+POST http://localhost:5000/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@infy.com",
+  "password": "Admin@123"
+}
+
+### 7. Admin uses admin route (should WORK)
+GET http://localhost:5000/api/admin/ping
+Authorization: Bearer {{adminLogin.response.body.token}}
+
+### 8. No token (should FAIL with 401)
+GET http://localhost:5000/api/auth/me
