@@ -4,7 +4,7 @@ A complete e-commerce web application for **smartphones**, built for INFYHACKATH
 It has a customer shop, an admin panel, and **INFY**, an AI shopping assistant that works from real product data.
 
 - Built by: [Your name]
-- Demo video (optional): [link, or delete this line]
+
 
 ## Features
 
